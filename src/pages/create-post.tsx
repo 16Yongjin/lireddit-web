@@ -6,7 +6,7 @@ import React from 'react'
 import { InputField } from '../components/InputField'
 import { Layout } from '../components/Layout'
 import { useCreatePostMutation } from '../generated/graphql'
-import { createUrclClient } from '../utils/createUrclClient'
+import { createUrqlClient } from '../utils/createUrqlClient'
 import { useIsAuth } from '../utils/useIsAuth'
 
 export const CreatePost: React.FC<{}> = ({}) => {
@@ -53,4 +53,4 @@ export const CreatePost: React.FC<{}> = ({}) => {
   )
 }
 
-export default withUrqlClient(createUrclClient)(CreatePost)
+export default withUrqlClient(createUrqlClient)(CreatePost)

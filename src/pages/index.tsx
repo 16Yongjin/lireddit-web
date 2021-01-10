@@ -1,14 +1,30 @@
 import { withUrqlClient } from 'next-urql'
 import NextLink from 'next/link'
-import { Box, Button, Flex, Heading, Link, Stack, Text } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  IconButton,
+  Link,
+  Stack,
+  Text,
+} from '@chakra-ui/react'
 import { Layout } from '../components/Layout'
-import { usePostsQuery } from '../generated/graphql'
-import { createUrclClient } from '../utils/createUrclClient'
+import {
+  useDeletePostMutation,
+  useMeQuery,
+  usePostsQuery,
+} from '../generated/graphql'
+import { createUrqlClient } from '../utils/createUrqlClient'
 import React, { useState } from 'react'
+import { UpdootSection } from '../components/UpdootSection'
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
+import { EditDeletePostButtons } from '../components/EditDeletePostButtons'
 
 const Index = () => {
   const [variables, setVariables] = useState({
-    limit: 10,
+    limit: 15,
     cursor: null as string | null,
   })
   const [{ data, fetching }] = usePostsQuery({ variables })
@@ -19,23 +35,37 @@ const Index = () => {
 
   return (
     <Layout>
-      <Flex align="center">
-        <Heading>LiReddit</Heading>
-        <NextLink href="/create-post">
-          <Link ml="auto">create post</Link>
-        </NextLink>
-      </Flex>
       <br />
       {!data && fetching ? (
         <div>loading...</div>
       ) : (
         <Stack spacing={8}>
-          {data!.posts.posts.map((p) => (
-            <Box key={p.id} p={5} shadow="md" borderWidth="1px">
-              <Heading fontSize="xl">{p.title}</Heading>
-              <Text mt={4}>{p.textSnippet}</Text>
-            </Box>
-          ))}
+          {data!.posts.posts.map((p) =>
+            !p ? null : (
+              <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
+                <UpdootSection post={p} />
+                <Box flex={1}>
+                  <NextLink href="/post/[id]" as={`/post/${p.id}`}>
+                    <Link>
+                      <Heading fontSize="xl">{p.title}</Heading>
+                    </Link>
+                  </NextLink>
+                  <Text>posted by {p.creator.username}</Text>
+                  <Flex align="center">
+                    <Text flex={1} mt={4}>
+                      {p.textSnippet}
+                    </Text>
+                    <Box ml="auto">
+                      <EditDeletePostButtons
+                        id={p.id}
+                        creatorId={p.creator.id}
+                      />
+                    </Box>
+                  </Flex>
+                </Box>
+              </Flex>
+            )
+          )}
         </Stack>
       )}
       {data && data.posts.hasMore ? (
@@ -59,4 +89,4 @@ const Index = () => {
   )
 }
 
-export default withUrqlClient(createUrclClient, { ssr: true })(Index)
+export default withUrqlClient(createUrqlClient, { ssr: true })(Index)

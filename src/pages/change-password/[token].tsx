@@ -8,7 +8,7 @@ import { toErrorMap } from '../../utils/toErrorMap'
 import { useChangePasswordMutation } from '../../generated/graphql'
 import { useRouter } from 'next/router'
 import { withUrqlClient } from 'next-urql'
-import { createUrclClient } from '../../utils/createUrclClient'
+import { createUrqlClient } from '../../utils/createUrqlClient'
 import NextLink from 'next/link'
 
 const ChangePassword: NextPage<{}> = () => {
@@ -71,4 +71,4 @@ const ChangePassword: NextPage<{}> = () => {
   )
 }
 
-export default withUrqlClient(createUrclClient)(ChangePassword as any)
+export default withUrqlClient(createUrqlClient)(ChangePassword as any)
